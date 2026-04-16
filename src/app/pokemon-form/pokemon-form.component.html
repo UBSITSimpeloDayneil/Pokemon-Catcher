@@ -1,8 +1,7 @@
 <div class="pokedex-container">
-  <h2>Register New Pokemon</h2>
+  <h2>{{ editingId() ? 'Update Pokemon' : 'Register New Pokemon' }}</h2>
 
   <form [formGroup]="pokemonForm" (ngSubmit)="onSubmit()">
-
     <div class="form-group">
       <label for="name">Pokemon Name:</label>
       <input type="text" id="name" formControlName="name" />
@@ -23,19 +22,32 @@
       <input type="text" id="nature" formControlName="nature" />
     </div>
 
-    <button type="submit">Catch Pokemon</button>
+    <div class="form-actions">
+      <button type="submit" [disabled]="pokemonForm.invalid" class="btn-submit">
+        {{ editingId() ? 'Confirm Update' : 'Catch Pokemon' }}
+      </button>
 
+      <button *ngIf="editingId()" type="button" (click)="cancelEdit()" class="btn-cancel">
+        Cancel
+      </button>
+    </div>
   </form>
 
   <h3>Current Pokedex</h3>
 
   <div class="pokemon-grid">
-    @for (p of pokemonService.pokemonList(); track p._id) {
-      <div class="pokemon-card">
-        <strong>{{ p.name }}</strong>
-        <p>Lvl {{ p.level }}</p>
-        <p>{{ p.type }} | {{ p.nature }}</p>
+    <div *ngFor="let p of pokemonService.pokemonList(); trackBy: trackByFn" class="pokemon-card">
+      <strong>{{ p.name }}</strong>
+      <p>Lvl {{ p.level }}</p>
+      <p>{{ p.type }} | {{ p.nature }}</p>
+
+      <div class="pokemon-actions">
+        <button type="button" (click)="startEdit(p)" class="btn-edit">Edit</button>
+
+        <button type="button" (click)="deletePokemon(p._id)" class="btn-release">
+          Release
+        </button>
       </div>
-    }
+    </div>
   </div>
 </div>

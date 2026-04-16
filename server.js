@@ -35,3 +35,13 @@ app.post("/api/pokemon",async (req, res) => {
     console.log("Added new Pokemon: " , pokemon);
     
 })
+//delete request for the data
+app.delete('/api/pokemon/:id', async(req, res) => {
+    await Pokemon.findByIdAndDelete(req.params.id);
+    res.status(204).send;
+})
+//Update request for the data
+app.put('/api/pokemon/:id', async(req, res) => {
+    const updatePokemon = await Pokemon.findByIdAndUpdate(req.params.id, req.body, {new: true});
+    res.send(updatePokemon);
+})
